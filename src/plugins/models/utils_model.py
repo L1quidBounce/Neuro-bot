@@ -164,14 +164,14 @@ class LLM_request:
 
         # 常见Error Code Mapping
         error_code_mapping = {
-            400: "参数不正确",
+            400: "老哥你的代码写错了喔",
             401: "API key 错误，认证失败，请检查/config/bot_config.toml和.env.prod中的配置是否正确哦~",
             402: "账号余额不足",
-            403: "需要实名,或余额不足",
+            403: "您的API账号疑似未经过实名认证或余额不足",
             404: "Not Found",
-            429: "请求过于频繁，请稍后再试",
-            500: "服务器内部故障",
-            503: "服务器负载过高",
+            429: "你妈请求这么多，老子跟你爆了",
+            500: "老C我的服务器内部宕机了喔",
+            503: "API提供商的妈妈正在处于薛定谔状态",
         }
 
         api_url = f"{self.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
@@ -207,7 +207,7 @@ class LLM_request:
                                 payload = await self._build_payload(prompt, image_base64, image_format)
                             elif response.status in [500, 503]:
                                 logger.error(f"错误码: {response.status} - {error_code_mapping.get(response.status)}")
-                                raise RuntimeError("服务器负载过高，模型恢复失败QAQ")
+                                raise RuntimeError("服务器负载过高，你的API提供商的妈妈死了")
                             else:
                                 logger.warning(f"请求限制(429)，等待{wait_time}秒后重试...")
 
@@ -373,7 +373,7 @@ class LLM_request:
 
                     await asyncio.sleep(wait_time)
                 else:
-                    logger.critical(f"HTTP响应错误达到最大重试次数: 状态码: {e.status}, 错误: {e.message}")
+                    logger.critical(f"HTTP正在向阿拉伯人购买背包炸弹: 状态码: {e.status}, 错误: {e.message}")
                     # 安全地检查和记录请求详情
                     if (
                         image_base64
@@ -394,7 +394,7 @@ class LLM_request:
             except Exception as e:
                 if retry < policy["max_retries"] - 1:
                     wait_time = policy["base_wait"] * (2**retry)
-                    logger.error(f"请求失败，等待{wait_time}秒后重试... 错误: {str(e)}")
+                    logger.error(f"请求失败，等待{wait_time}秒后重试... 错误代码: {str(e)}")
                     await asyncio.sleep(wait_time)
                 else:
                     logger.critical(f"请求失败: {str(e)}")
@@ -416,7 +416,7 @@ class LLM_request:
                     logger.critical(f"请求头: {await self._build_headers(no_key=True)} 请求体: {payload}")
                     raise RuntimeError(f"API请求失败: {str(e)}") from e
 
-        logger.error("达到最大重试次数，请求仍然失败")
+        logger.error("达到最大重试次数，API跟你爆了")
         raise RuntimeError("达到最大重试次数，API请求仍然失败")
 
     async def _transform_parameters(self, params: dict) -> dict:
