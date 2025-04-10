@@ -3,9 +3,9 @@
 @chcp 936
 
 @REM 设置版本号
-set "VERSION=1.0"
+set "VERSION=1.0-Modded_by_Fedal"
 
-title 麦麦Bot控制台 v%VERSION%
+title MaiMBot_Console v%VERSION%
 
 @REM 设置Python和Git环境变量
 set "_root=%~dp0"
@@ -21,14 +21,14 @@ if exist "%_root%\python" (
     call "%_root%\venv\Scripts\activate.bat"
     set "PYTHON_HOME=%_root%\venv\Scripts"
 ) else (
-    echo 正在自动查找Python解释器...
+    echo 正在自动查找Python本体...
 
     where python >nul 2>&1
     if %errorlevel% equ 0 (
         for /f "delims=" %%i in ('where python') do (
             echo %%i | findstr /i /c:"!LocalAppData!\Microsoft\WindowsApps\python.exe" >nul
             if errorlevel 1 (
-                echo 找到Python解释器：%%i
+                echo 找到Python本体：%%i
                 set "py_path=%%i"
                 goto :validate_python
             )
@@ -41,14 +41,14 @@ if exist "%_root%\python" (
             goto :validate_python
         )
     )
-    echo 没有找到Python解释器,要安装吗?
+    echo 没有找到Python本体,要安装吗?
     set /p pyinstall_confirm="继续？(Y/n): "
     if /i "!pyinstall_confirm!"=="Y" (
         cls
         echo 正在安装Python...
         winget install --id Python.Python.3.13 -e --accept-package-agreements --accept-source-agreements
         if %errorlevel% neq 0 (
-            echo 安装失败，请手动安装Python
+            echo 安装失败，请手动安装Python本体
             start https://www.python.org/downloads/
             exit /b
         )
@@ -61,13 +61,13 @@ if exist "%_root%\python" (
         exit /b
     )
 
-    echo 错误：未找到可用的Python解释器！
+    echo 错误：未找到可用的Python本体！
     exit /b 1
 
     :validate_python
     "!py_path!" --version >nul 2>&1
     if %errorlevel% neq 0 (
-        echo 无效的Python解释器：%py_path%
+        echo 无效的Python本体：%py_path%
         exit /b 1
     )
 
@@ -89,7 +89,7 @@ cls
 if exist "%_root%\tools\git\bin" (
     set "GIT_HOME=%_root%\tools\git\bin"
 ) else (
-    echo 正在自动查找Git...
+    echo 正在自动查找Git服务...
 
     where git >nul 2>&1
     if %errorlevel% equ 0 (
@@ -106,11 +106,11 @@ if exist "%_root%\tools\git\bin" (
             goto :validate_git
         )
     )
-    echo 没有找到Git，要安装吗？
+    echo 没有找到Git服务，要安装吗？
     set /p confirm="继续？(Y/N): "
     if /i "!confirm!"=="Y" (
         cls
-        echo 正在安装Git...
+        echo 正在安装Git服务...
         set "custom_url=https://ghfast.top/https://github.com/git-for-windows/git/releases/download/v2.48.1.windows.1/Git-2.48.1-64-bit.exe"
 
         set "download_path=%TEMP%\Git-Installer.exe"
@@ -213,19 +213,20 @@ set "PATH=%PYTHON_HOME%;%GIT_HOME%;%PATH%"
 if not exist "!_root!\bot.py" (
     cls
     echo 你似乎没有安装麦麦Bot，要安装在当前目录吗？
+    echo Warning: Fedal魔改版仅限于0.5.15版本，如有新版本需要请去Maibot官方Github下载
     set /p confirm="继续？(Y/N): "
     if /i "!confirm!"=="Y" (
         echo 要使用Git代理下载吗？
         set /p proxy_confirm="继续？(Y/N): "
         if /i "!proxy_confirm!"=="Y" (
             echo 正在安装麦麦Bot...
-            git clone https://ghfast.top/https://github.com/SengokuCola/MaiMBot
+            git clone https://ghfast.top/https://github.com/L1quidBounce/Neuro-bot
         ) else (
             echo 正在安装麦麦Bot...
-            git clone https://github.com/SengokuCola/MaiMBot
+            git clone https://github.com/L1quidBounce/Neuro-bot
         )
-        xcopy /E /H /I MaiMBot . >nul 2>&1
-        rmdir /s /q MaiMBot
+        xcopy /E /H /I Neuro-bot . >nul 2>&1
+        rmdir /s /q Neuro-bot
         git checkout main-fix
 
         echo 安装完成，正在安装依赖...
@@ -280,7 +281,7 @@ if defined VIRTUAL_ENV (
 echo =====================================
 echo 虚拟环境检测警告：
 echo 当前使用系统Python路径：!PYTHON_HOME!
-echo 未检测到激活的虚拟环境！
+echo 未检测到激活的虚拟环境
 
 :env_interaction
 echo =====================================
@@ -398,13 +399,13 @@ if /i "!install_confirm!"=="Y" (
 :menu
 @chcp 936
 cls
-echo 麦麦Bot控制台 v%VERSION%  当前分支: %BRANCH_COLOR%%BRANCH%[0m
+echo MaiMBot_CONSOLE v%VERSION%  当前分支: %BRANCH_COLOR%%BRANCH%[0m
 echo 当前Python环境: [96m!PYTHON_HOME![0m
 echo ======================
-echo 1. 更新并启动麦麦Bot (默认)
+echo 1. 更新并启动麦麦Bot
 echo 2. 直接启动麦麦Bot
 echo 3. 启动麦麦配置界面
-echo 4. 打开麦麦神奇工具箱
+echo 4. 打开麦麦知识库工具
 echo 5. 退出
 echo ======================
 
@@ -441,7 +442,7 @@ goto menu
 :tools_menu
 @chcp 936
 cls
-echo 麦麦时尚工具箱  当前分支: %BRANCH_COLOR%%BRANCH%[0m
+echo 麦麦知识库管理器  当前分支: %BRANCH_COLOR%%BRANCH%[0m
 echo ======================
 echo 1. 更新依赖
 echo 2. 切换分支
