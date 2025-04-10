@@ -30,7 +30,7 @@ def easter_egg():
     from colorama import init, Fore
 
     init()
-    text = "多年以后，面对AI行刑队，张三将会回想起他2023年在会议上讨论人工智能的那个下午"
+    text = "什么彩蛋？哪里有彩蛋？被Evil和Neuro吃掉了。"
     rainbow_colors = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA]
     rainbow_text = ""
     for i, char in enumerate(text):
@@ -41,15 +41,15 @@ def easter_egg():
 def init_config():
     # 初次启动检测
     if not os.path.exists("config/bot_config.toml"):
-        logger.warning("检测到bot_config.toml不存在，正在从模板复制")
+        logger.warning("[MaiMBot] 检测到Bot参数不存在，正在从模板复制")
 
         # 检查config目录是否存在
         if not os.path.exists("config"):
             os.makedirs("config")
-            logger.info("创建config目录")
+            logger.info("[MaiMBot] 正在创建config目录")
 
         shutil.copy("template/bot_config_template.toml", "config/bot_config.toml")
-        logger.info("复制完成，请修改config/bot_config.toml和.env.prod中的配置后重新启动")
+        logger.info("[MaiMBot] 复制完成，请修改config文件夹下的bot_config.toml和.env.prod中的配置后重新启动")
 
 
 def init_env():
@@ -60,7 +60,7 @@ def init_env():
 
         # 检测.env.prod文件是否存在
         if not os.path.exists(".env.prod"):
-            logger.error("检测到.env.prod文件不存在")
+            logger.error("[MaiMBot] 未检测到.env.prod文件")
             shutil.copy("template.env", "./.env.prod")
 
     # 检测.env.dev文件是否存在，不存在的话直接复制生产环境配置
@@ -71,17 +71,17 @@ def init_env():
     # 首先加载基础环境变量.env
     if os.path.exists(".env"):
         load_dotenv(".env", override=True)
-        logger.success("成功加载基础环境变量配置")
+        logger.success("[MaiMBot] 成功加载基础环境变量配置")
 
 
 def load_env():
     # 使用闭包实现对加载器的横向扩展，避免大量重复判断
     def prod():
-        logger.success("成功加载生产环境变量配置")
+        logger.success("[MaiMBot] 成功加载生产环境变量配置")
         load_dotenv(".env.prod", override=True)  # override=True 允许覆盖已存在的环境变量
 
     def dev():
-        logger.success("成功加载开发环境变量配置")
+        logger.success("[MaiMBot] 成功加载开发环境变量配置")
         load_dotenv(".env.dev", override=True)  # override=True 允许覆盖已存在的环境变量
 
     fn_map = {"prod": prod, "dev": dev}
@@ -93,11 +93,11 @@ def load_env():
         fn_map[env]()  # 根据映射执行闭包函数
 
     elif os.path.exists(f".env.{env}"):
-        logger.success(f"加载{env}环境变量配置")
+        logger.success(f"[MaiMBot] 加载{env}环境变量配置")
         load_dotenv(f".env.{env}", override=True)  # override=True 允许覆盖已存在的环境变量
 
     else:
-        logger.error(f"ENVIRONMENT 配置错误，请检查 .env 文件中的 ENVIRONMENT 变量及对应 .env.{env} 是否存在")
+        logger.error(f"[MaiMBot] ENVIRONMENT 配置错误，请检查 .env 文件中的 ENVIRONMENT 变量及对应 .env.{env} 是否存在")
         RuntimeError(f"ENVIRONMENT 配置错误，请检查 .env 文件中的 ENVIRONMENT 变量及对应 .env.{env} 是否存在")
 
 
@@ -184,7 +184,7 @@ def check_eula():
             eula_content = f.read()
         eula_new_hash = hashlib.md5(eula_content.encode("utf-8")).hexdigest()
     else:
-        logger.error("EULA.md 文件不存在")
+        logger.error("[MaiMBot] EULA.md 文件不存在")
         raise FileNotFoundError("EULA.md 文件不存在")
 
     # 首先计算当前隐私条款文件的哈希值
@@ -193,7 +193,7 @@ def check_eula():
             privacy_content = f.read()
         privacy_new_hash = hashlib.md5(privacy_content.encode("utf-8")).hexdigest()
     else:
-        logger.error("PRIVACY.md 文件不存在")
+        logger.error("[MaiMBot] PRIVACY.md 文件不存在")
         raise FileNotFoundError("PRIVACY.md 文件不存在")
 
     # 检查EULA确认文件是否存在
@@ -235,7 +235,7 @@ def check_eula():
                     privacy_confirm_file.write_text(privacy_new_hash, encoding="utf-8")
                 break
             else:
-                print('请输入"同意"或"confirmed"以继续运行')
+                print('[MaiMBot] 请输入"同意"或"confirmed"以继续运行')
         return
     elif eula_confirmed and privacy_confirmed:
         return
@@ -248,7 +248,7 @@ def raw_main():
         time.tzset()
 
     check_eula()
-    print("检查EULA和隐私条款完成")
+    print("[MaiMBot] 检查EULA和隐私条款完成")
     easter_egg()
     init_config()
     init_env()
@@ -289,7 +289,7 @@ if __name__ == "__main__":
         try:
             loop.run_until_complete(uvicorn_main())
         except KeyboardInterrupt:
-            logger.warning("收到中断信号，正在优雅关闭...")
+            logger.warning("[MaiMBot] 收到中断信号，正在关闭...")
             loop.run_until_complete(graceful_shutdown())
         finally:
             loop.close()
