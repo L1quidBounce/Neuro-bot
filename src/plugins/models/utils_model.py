@@ -166,7 +166,7 @@ class LLM_request:
         error_code_mapping = {
             400: "老哥你的代码写错了喔",
             401: "API key 错误，认证失败，请检查/config/bot_config.toml和.env.prod中的配置是否正确哦~",
-            402: "账号余额不足",
+            402: "你账号没钱了",
             403: "您的API账号疑似未经过实名认证或余额不足",
             404: "Not Found",
             429: "你妈请求这么多，老子跟你爆了",
@@ -390,7 +390,7 @@ class LLM_request:
                                     f"{image_base64[:10]}...{image_base64[-10:]}"
                                 )
                     logger.critical(f"请求头: {await self._build_headers(no_key=True)} 请求体: {payload}")
-                    raise RuntimeError(f"API请求失败: 状态码 {e.status}, {e.message}") from e
+                    raise RuntimeError(f"API跟你爆了: 状态码 {e.status}, {e.message}") from e
             except Exception as e:
                 if retry < policy["max_retries"] - 1:
                     wait_time = policy["base_wait"] * (2**retry)
@@ -417,7 +417,7 @@ class LLM_request:
                     raise RuntimeError(f"API请求失败: {str(e)}") from e
 
         logger.error("达到最大重试次数，API跟你爆了")
-        raise RuntimeError("达到最大重试次数，API请求仍然失败")
+        raise RuntimeError("达到最大重试次数，API跟你爆了")
 
     async def _transform_parameters(self, params: dict) -> dict:
         """
