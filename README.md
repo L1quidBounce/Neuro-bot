@@ -1,6 +1,5 @@
-# Neuro-bot-recode
-基于MaiBot产生灵感的神金Neuro-bot
-*你问我为什么不用硅基流动的deepseek？那玩意就是个阉割的傻比ds*
+# Neuro-bot
+一个简单而有效的聊天机器人
 
 > [!WARNING]
 > 由于史山代码与vibe coding过多，本项目于2025/08/20计划重写，并采用MySQL数据库作为数据存储工具，重写完成日期不定
